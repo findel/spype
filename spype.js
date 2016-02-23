@@ -69,7 +69,7 @@ skyweb.messagesCallback = function (messages)
 		if(message.resource.from.indexOf(config.skype_username) === -1 && message.resource.messagetype !== 'Control/Typing' && message.resource.messagetype !== 'Control/ClearTyping')
 		{
 			var conversationLink = message.resource.conversationLink;
-            var conversationId = conversationLink.substring(conversationLink.lastIndexOf('/') + 1);
+			var conversationId = conversationLink.substring(conversationLink.lastIndexOf('/') + 1);
 			config.pipes.forEach(function(pipe)
 			{
 				if(conversationId == pipe.skypeId)
