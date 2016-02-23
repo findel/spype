@@ -1,0 +1,19 @@
+{
+  "name": "spype",
+  "version": "0.1.0,
+  "description": "Create bi-directional links (pipes) between Skype and Discord.",
+  "author": "Phil Baines <phil.baines@wubbleyew.com>",
+  "contributors": [{
+  "name": "Phil Baines",
+  "email": "phil.baines@wubbleyew.com"
+}],
+  "dependencies": {
+	"skyweb" : "0.0.2",
+    "discord.io": "1.7.0",
+    "to-markdown": "2.0.1",
+    "markdown": "0.5.0"
+  },
+  "preferGlobal": false,
+  "private": true,
+  "analyze": true
+}
