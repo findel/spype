@@ -16,6 +16,18 @@ var discord = new DiscordClient({
     password: config.discord_password
 });
 
+var skypeConverters = 
+[
+	{
+		filter: ['a', 'ss', 'quote', 'legacyquote'],
+		replacement: function(content) { return content; }
+	},
+	{
+		filter: "pre",
+		replacement: function(content) { return "`" + content + "`"; }
+	}
+]
+
 var sendSkypeMessage = function(pipe, message, sender)
 {
 	var skypeMessage = "";
@@ -43,10 +55,7 @@ config.pipes.forEach(function(pipe)
 });
 
 var sendDiscordMessage = function(pipe, message, sender)
-{
-	// Convert to Markdown
-	// message = toMarkdown(message);
-	
+{	
 	var discordMessage = "";
 	
 	//if(pipe.lastDiscordSender != null)
@@ -105,7 +114,8 @@ skyweb.messagesCallback = function (messages)
 						console.log(message);
 					}
 					// Send to Discord
-					sendDiscordMessage(pipe, message.resource.content, message.resource.imdisplayname);
+					var cleanMessage = toMarkdown(message.resource.content, { converters: skypeConverters });
+					sendDiscordMessage(pipe, cleanMessage, message.resource.imdisplayname);
 				}
 			});
         }
