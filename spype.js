@@ -40,6 +40,12 @@ var sendDisconnectedMessages = function()
 	});
 }
 
+console.log("Setting up the following pipes:");
+config.pipes.forEach(function(pipe)
+{
+	console.log("* " + pipe.name);
+});
+
 skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) => 
 {    
 	console.log("Skype connected.")
