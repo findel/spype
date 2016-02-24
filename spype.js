@@ -14,29 +14,37 @@ var discord = new DiscordClient({
     password: config.discord_password
 });
 
-var sendSkypeMessage = function(pipe, message)
+var sendSkypeMessage = function(pipe, message, sender)
 {
-	skyweb.sendMessage(pipe.skypeId, message);
-	console.log("SKYPE (" + pipe.name + ") " + message);
+	var skypeMessage = message + "\n";
+	if(sender != null)
+		skypeMessage = util.format("[%s] %s", sender, skypeMessage);
+	
+	skyweb.sendMessage(pipe.skypeId, skypeMessage);
+	console.log("SKYPE (" + pipe.name + ") " + skypeMessage);
 }
 
-var sendDiscordMessage = function(pipe, message)
+var sendDiscordMessage = function(pipe, message, sender)
 {
+	var discordMessage = toMarkdown(message) + "\n";
+	if(sender != null)
+		discordMessage = util.format("*[%s]* %s", sender, discordMessage);
+	
 	discord.sendMessage({
 		to: pipe.discordId,
-		message: message,
+		message: discordMessage,
 		tts: false, //Optional
 		typing: false //Optional, client will act as if typing the message. Based on message length.
 	});
-	console.log("DISCORD: (" + pipe.name + ") " + message);
+	console.log("DISCORD: (" + pipe.name + ") " + discordMessage);
 }
 
 var sendDisconnectedMessages = function()
 {
 	config.pipes.forEach(function(pipe)
 	{
-		// sendSkypeMessage(pipe, "DISCONNECTED.");
-		// sendDiscordMessage(pipe, "DISCONNECTED.");
+		// sendSkypeMessage(pipe, "Disconnected", "SPYPE");
+		// sendDiscordMessage(pipe, "Disconnected", "SPYPE");
 	});
 }
 
@@ -51,7 +59,7 @@ skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) =
 	console.log("Skype connected.")
 	config.pipes.forEach(function(pipe)
 	{
-		sendSkypeMessage(pipe, "RECONNECTED");
+		sendSkypeMessage(pipe, "Reconnected", "SPYPE");
 	});
 });
 
@@ -59,7 +67,7 @@ discord.on('ready', function() {
     console.log("Discord connected.")
 	config.pipes.forEach(function(pipe)
 	{
-		sendDiscordMessage(pipe, "RECONNECTED");
+		sendDiscordMessage(pipe, "Reconnected", "SPYPE");
 	});
 });
 
@@ -75,8 +83,7 @@ skyweb.messagesCallback = function (messages)
 			{
 				if(conversationId == pipe.skypeId)
 				{
-					var discordMessage = util.format("*[%s]* %s\n", message.resource.imdisplayname, toMarkdown(message.resource.content));
-					sendDiscordMessage(pipe, discordMessage);
+					sendDiscordMessage(pipe, message.resource.content, message.resource.imdisplayname);
 				}
 			});
         }
@@ -90,8 +97,7 @@ discord.on('message', function(user, userID, channelID, message, rawEvent) {
 		{
 			if(channelID == pipe.discordId)
 			{
-				var skypeMessage = util.format("[%s] %s\n", user, discord.fixMessage(message));
-				sendSkypeMessage(pipe, skypeMessage);
+				sendSkypeMessage(pipe, message, user);
 			}
 		});
 	}
