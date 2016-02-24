@@ -16,19 +16,44 @@ var discord = new DiscordClient({
 
 var sendSkypeMessage = function(pipe, message, sender)
 {
-	var skypeMessage = message + "\n";
-	if(sender != null)
-		skypeMessage = util.format("[%s] %s", sender, skypeMessage);
+	var skypeMessage = "";
+
+	//if(pipe.lastSkypeSender != null)
+		//skypeMessage += "\n";
+
+	if(sender != null && sender != pipe.lastSkypeSender)
+		skypeMessage += util.format("[%s]\n", sender);
+	
+	skypeMessage += message;
 	
 	skyweb.sendMessage(pipe.skypeId, skypeMessage);
-	console.log("SKYPE (" + pipe.name + ") " + skypeMessage);
+	console.log("\nSKYPE (" + pipe.name + ") " + skypeMessage);
+	pipe.lastSkypeSender = sender;
 }
+
+// SET UP PIPES AND SAY SO
+console.log("Setting up the following pipes:");
+config.pipes.forEach(function(pipe)
+{
+	pipe.lastSkypeSender = null;
+	pipe.lastDiscordSender = null;
+	console.log("* " + pipe.name);
+});
 
 var sendDiscordMessage = function(pipe, message, sender)
 {
-	var discordMessage = toMarkdown(message) + "\n";
-	if(sender != null)
-		discordMessage = util.format("*[%s]* %s", sender, discordMessage);
+	// Convert to Markdown
+	// message = toMarkdown(message);
+	
+	var discordMessage = "";
+	
+	//if(pipe.lastDiscordSender != null)
+		//discordMessage += "\n";
+	
+	if(sender != null && sender != pipe.lastDiscordSender)
+		discordMessage += util.format("**[%s]**\n", sender);
+
+	discordMessage += message;
 	
 	discord.sendMessage({
 		to: pipe.discordId,
@@ -36,23 +61,9 @@ var sendDiscordMessage = function(pipe, message, sender)
 		tts: false, //Optional
 		typing: false //Optional, client will act as if typing the message. Based on message length.
 	});
-	console.log("DISCORD: (" + pipe.name + ") " + discordMessage);
+	console.log("\nDISCORD: (" + pipe.name + ") " + discordMessage);
+	pipe.lastDiscordSender = sender;
 }
-
-var sendDisconnectedMessages = function()
-{
-	config.pipes.forEach(function(pipe)
-	{
-		// sendSkypeMessage(pipe, "Disconnected", "SPYPE");
-		// sendDiscordMessage(pipe, "Disconnected", "SPYPE");
-	});
-}
-
-console.log("Setting up the following pipes:");
-config.pipes.forEach(function(pipe)
-{
-	console.log("* " + pipe.name);
-});
 
 skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) => 
 {    
@@ -83,6 +94,9 @@ skyweb.messagesCallback = function (messages)
 			{
 				if(conversationId == pipe.skypeId)
 				{
+					// Skype message received, clear lastSkypeSender
+					pipe.lastSkypeSender = null;
+					// Send to Discord
 					sendDiscordMessage(pipe, message.resource.content, message.resource.imdisplayname);
 				}
 			});
@@ -97,11 +111,24 @@ discord.on('message', function(user, userID, channelID, message, rawEvent) {
 		{
 			if(channelID == pipe.discordId)
 			{
+				// Discord message received, clear lastDiscordSender
+				pipe.lastDiscordSender = null;
+				// Send to Skype
 				sendSkypeMessage(pipe, message, user);
 			}
 		});
 	}
 });
+
+
+var sendDisconnectedMessages = function()
+{
+	config.pipes.forEach(function(pipe)
+	{
+		sendSkypeMessage(pipe, "Disconnected", "SPYPE");
+		sendDiscordMessage(pipe, "Disconnected", "SPYPE");
+	});
+}
 
 function exitHandler(options, err)
 {
@@ -132,7 +159,15 @@ if(process.platform === "win32")
 }
 
 //do something when app is closing
-process.on('beforeExit', exitHandler.bind(null,{sendDisconnect:true, exit:true}));
+process.on('SIGHUP', function()
+{
+	console.log("SIGHUP");
+	config.pipes.forEach(function(pipe)
+	{
+		sendSkypeMessage(pipe, "SIGHUP", "SPYPE");
+		sendDiscordMessage(pipe, "SIGHUP", "SPYPE");
+	});
+});
 
 //do something when app is closing
 process.on('exit', exitHandler.bind(null,{sendDisconnect:true, exit:true}));
