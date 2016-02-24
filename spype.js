@@ -43,7 +43,6 @@ var sendDisconnectedMessages = function()
 skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) => 
 {    
 	console.log("Skype connected.")
-	// console.log('Your contacts : ' + JSON.stringify(skyweb.contactsService.contacts, null, 2));
 	config.pipes.forEach(function(pipe)
 	{
 		// sendSkypeMessage(pipe, "CONNECTED");
@@ -52,14 +51,10 @@ skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) =
 
 discord.on('ready', function() {
     console.log("Discord connected.")
-
 	config.pipes.forEach(function(pipe)
 	{
 		// sendDiscordMessage(pipe, "CONNECTED");
 	});
-	
-	
-	
 });
 
 skyweb.messagesCallback = function (messages)
