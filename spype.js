@@ -8,6 +8,8 @@ var fs = require('fs');
 var config = JSON.parse(fs.readFileSync("config.json"));
 var markdown = require("markdown").markdown;
 
+var debug = process.argv[2] == "debug" ? true : false;
+
 var discord = new DiscordClient({
     autorun: true,
     email: config.discord_email,
@@ -96,6 +98,12 @@ skyweb.messagesCallback = function (messages)
 				{
 					// Skype message received, clear lastSkypeSender
 					pipe.lastSkypeSender = null;
+					// Output received object (testing)
+					if(debug)
+					{
+						console.log("\nRECEIVED IN SKYPE");
+						console.log(message);
+					}
 					// Send to Discord
 					sendDiscordMessage(pipe, message.resource.content, message.resource.imdisplayname);
 				}
@@ -113,6 +121,12 @@ discord.on('message', function(user, userID, channelID, message, rawEvent) {
 			{
 				// Discord message received, clear lastDiscordSender
 				pipe.lastDiscordSender = null;
+				// Output received object (testing)
+				if(debug)
+				{
+					console.log("\nRECEIVED IN DISCORD");
+					console.log(rawEvent);
+				}
 				// Send to Skype
 				sendSkypeMessage(pipe, message, user);
 			}
