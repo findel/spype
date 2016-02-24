@@ -45,7 +45,7 @@ skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) =
 	console.log("Skype connected.")
 	config.pipes.forEach(function(pipe)
 	{
-		// sendSkypeMessage(pipe, "CONNECTED");
+		sendSkypeMessage(pipe, "RECONNECTED");
 	});
 });
 
@@ -53,7 +53,7 @@ discord.on('ready', function() {
     console.log("Discord connected.")
 	config.pipes.forEach(function(pipe)
 	{
-		// sendDiscordMessage(pipe, "CONNECTED");
+		sendDiscordMessage(pipe, "RECONNECTED");
 	});
 });
 
