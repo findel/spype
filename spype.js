@@ -108,7 +108,8 @@ skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) =
 	skypeConnected = true;
 	pipes.each(function(pipe)
 	{
-		sendSkypeMessage(pipe, "Reconnected", "SPYPE");
+		if(pipe.announceConnection)
+			sendSkypeMessage(pipe, "Reconnected", "SPYPE");
 	});
 });
 
@@ -117,7 +118,8 @@ discord.on('ready', function() {
 	discordConnected = true;
 	pipes.each(function(pipe)
 	{
-		sendDiscordMessage(pipe, "Reconnected", "SPYPE");
+		if(pipe.announceConnection)
+			sendDiscordMessage(pipe, "Reconnected", "SPYPE");
 	});
 });
 

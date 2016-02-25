@@ -9,31 +9,36 @@
 		{
 			"name" : "Test",
 			"skypeId" : "19:4a134dea10f4463bab4fe2f42a47ae56@thread.skype",
-			"discordId" : "141655287034675200" 
+			"discordId" : "141655287034675200",
+			"announceConnection" : true
 		}
 		,
 		{
 			"name" : "Discord API Testing",
 			"skypeId" : "19:db59b5ae86bf47d9838c837c12f675b8@thread.skype",
-			"discordId" : "81402706320699392"
+			"discordId" : "81402706320699392",
+			"announceConnection" : false
 		}
 		,
 		{
 			"name" : "Gnasp's Realm",
 			"skypeId" : "19:f4a403c80334432b96ededbe8aa67915@thread.skype",
-			"discordId" : "141163439245623296"
+			"discordId" : "141163439245623296",
+			"announceConnection" : false
 		}
 		,
 		{
 			"name" : "Off.Topic",
 			"skypeId" : "19:390898275bc147a5a4d6215bca2cb49a@thread.skype",
 			"discordId" : "135799061537095682"
+			"announceConnection" : false
 		}
 		,
 		{
 			"name" : "Crit.Map",
 			"skypeId" : "19:1a0a710c0f7642a7bf330461873f341d@thread.skype",
 			"discordId" : "151819424758890496"
+			"announceConnection" : false
 		}
 	 ]
 }
