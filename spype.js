@@ -10,6 +10,9 @@ var markdown = require("markdown").markdown;
 
 var debug = process.argv[2] == "debug" ? true : false;
 
+var skypeConnected = false;
+var discordConnected = false;
+
 var discord = new DiscordClient({
     autorun: true,
     email: config.discord_email,
@@ -40,9 +43,18 @@ var sendSkypeMessage = function(pipe, message, sender)
 	
 	skypeMessage += message;
 	
-	skyweb.sendMessage(pipe.skypeId, skypeMessage);
 	console.log("\nSKYPE (" + pipe.name + ") " + skypeMessage);
-	pipe.lastSkypeSender = sender;
+	
+	if(skypeConnected)
+	{
+		skyweb.sendMessage(pipe.skypeId, skypeMessage);
+		pipe.lastSkypeSender = sender;	
+		console.log("SENT!");
+	}
+	else
+	{
+		console.log("FAILED! Skype is not connected.");
+	}
 }
 
 // SET UP PIPES AND SAY SO
@@ -66,28 +78,39 @@ var sendDiscordMessage = function(pipe, message, sender)
 
 	discordMessage += message;
 	
-	discord.sendMessage({
-		to: pipe.discordId,
-		message: discordMessage,
-		tts: false, //Optional
-		typing: false //Optional, client will act as if typing the message. Based on message length.
-	});
 	console.log("\nDISCORD: (" + pipe.name + ") " + discordMessage);
-	pipe.lastDiscordSender = sender;
+	
+	if(discordConnected)
+	{
+		discord.sendMessage({
+			to: pipe.discordId,
+			message: discordMessage,
+			tts: false, //Optional
+			typing: false //Optional, client will act as if typing the message. Based on message length.
+		});
+		pipe.lastDiscordSender = sender;
+		console.log("SENT!");
+	}
+	else
+	{
+		console.log("FAILED! Discord is not connected.");
+	}
 }
 
 skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) => 
 {    
 	console.log("Skype connected.")
+	skyweb.setStatus('Online');
+	skypeConnected = true;
 	config.pipes.forEach(function(pipe)
 	{
-		skyweb.setStatus('Online');
 		sendSkypeMessage(pipe, "Reconnected", "SPYPE");
 	});
 });
 
 discord.on('ready', function() {
     console.log("Discord connected.")
+	discordConnected = true;
 	config.pipes.forEach(function(pipe)
 	{
 		sendDiscordMessage(pipe, "Reconnected", "SPYPE");
