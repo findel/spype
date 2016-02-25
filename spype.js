@@ -97,7 +97,8 @@ skyweb.messagesCallback = function (messages)
 {
     messages.forEach(function (message) 
 	{
-		if(message.resource.from.indexOf(config.skype_username) === -1 && message.resource.messagetype !== 'Control/Typing' && message.resource.messagetype !== 'Control/ClearTyping')
+		var spypeIsNotSender = (message.resource.from.toLowerCase().indexOf(config.skype_username.toLowerCase()) === -1);
+		if(spypeIsNotSender && message.resource.messagetype !== 'Control/Typing' && message.resource.messagetype !== 'Control/ClearTyping')
 		{
 			var conversationLink = message.resource.conversationLink;
 			var conversationId = conversationLink.substring(conversationLink.lastIndexOf('/') + 1);
