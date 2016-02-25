@@ -138,8 +138,9 @@ skyweb.messagesCallback = function (messages)
 						console.log("\nRECEIVED IN SKYPE");
 						console.log(message);
 					}
-					// Send to Discord
+					// Clean up message from skype (remove code etc)
 					var cleanMessage = toMarkdown(message.resource.content, { converters: skypeConverters });
+					// Send to Discord
 					sendDiscordMessage(pipe, cleanMessage, message.resource.imdisplayname);
 				}
 			});
@@ -162,8 +163,10 @@ discord.on('message', function(user, userID, channelID, message, rawEvent) {
 					console.log("\nRECEIVED IN DISCORD");
 					console.log(rawEvent);
 				}
+				// Clean up message from discord (remove @User encoding)
+				var cleanMessage = discord.fixMessage(message);
 				// Send to Skype
-				sendSkypeMessage(pipe, message, user);
+				sendSkypeMessage(pipe, cleanMessage, user);
 			}
 		});
 	}
