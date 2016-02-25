@@ -173,6 +173,7 @@ discord.on('message', function(user, userID, channelID, message, rawEvent) {
 });
 
 discord.on('debug', function(rawEvent) {
+	/*
 	if(rawEvent.t == "MESSAGE_UPDATE")
 	{
 		var channelId = rawEvent.d.channel_id;
@@ -213,6 +214,7 @@ discord.on('debug', function(rawEvent) {
 			editHelper.deleteMessage(pipe, { discordMessageId: messageId })
 		}
 	}
+	*/
 });
 
 var sendDisconnectedMessages = function()
