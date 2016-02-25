@@ -33,6 +33,10 @@ var skypeConverters =
 	{
 		filter: "pre",
 		replacement: function(content) { return "`" + content + "`"; }
+	},
+	{
+		filter: "uriobject",
+		replacement: function(content) { return "` Shared something on skype that can't be shared elsewhere! :-( `"; }
 	}
 ]
 
