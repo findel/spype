@@ -81,6 +81,7 @@ skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) =
 	console.log("Skype connected.")
 	config.pipes.forEach(function(pipe)
 	{
+		skyweb.setStatus('Online');
 		sendSkypeMessage(pipe, "Reconnected", "SPYPE");
 	});
 });
