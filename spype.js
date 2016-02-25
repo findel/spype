@@ -8,6 +8,11 @@ var fs = require('fs');
 var config = JSON.parse(fs.readFileSync("config.json"));
 var markdown = require("markdown").markdown;
 
+var PipesHelper = require("./PipesHelper");
+var EditMessageHelper = require("./EditMessageHelper");
+var pipes = new PipesHelper(config);
+var editHelper = new EditMessageHelper();
+
 var debug = process.argv[2] == "debug" ? true : false;
 
 var skypeConnected = false;
@@ -58,13 +63,7 @@ var sendSkypeMessage = function(pipe, message, sender)
 }
 
 // SET UP PIPES AND SAY SO
-console.log("Setting up the following pipes:");
-config.pipes.forEach(function(pipe)
-{
-	pipe.lastSkypeSender = null;
-	pipe.lastDiscordSender = null;
-	console.log("* " + pipe.name);
-});
+pipes.setup();
 
 var sendDiscordMessage = function(pipe, message, sender)
 {	
@@ -82,11 +81,12 @@ var sendDiscordMessage = function(pipe, message, sender)
 	
 	if(discordConnected)
 	{
-		discord.sendMessage({
-			to: pipe.discordId,
-			message: discordMessage,
-			tts: false, //Optional
-			typing: false //Optional, client will act as if typing the message. Based on message length.
+		discord.sendMessage({ to: pipe.discordId, message: discordMessage, tts: false, typing: false}, function(err, response){
+			if(debug)
+			{
+				console.log("\nSENT TO DISCORD:");
+				console.log(response);
+			}
 		});
 		pipe.lastDiscordSender = sender;
 		console.log("SENT!");
@@ -102,7 +102,7 @@ skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) =
 	console.log("Skype connected.")
 	skyweb.setStatus('Online');
 	skypeConnected = true;
-	config.pipes.forEach(function(pipe)
+	pipes.each(function(pipe)
 	{
 		sendSkypeMessage(pipe, "Reconnected", "SPYPE");
 	});
@@ -111,7 +111,7 @@ skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) =
 discord.on('ready', function() {
     console.log("Discord connected.")
 	discordConnected = true;
-	config.pipes.forEach(function(pipe)
+	pipes.each(function(pipe)
 	{
 		sendDiscordMessage(pipe, "Reconnected", "SPYPE");
 	});
@@ -126,24 +126,22 @@ skyweb.messagesCallback = function (messages)
 		{
 			var conversationLink = message.resource.conversationLink;
 			var conversationId = conversationLink.substring(conversationLink.lastIndexOf('/') + 1);
-			config.pipes.forEach(function(pipe)
+			var pipe = pipes.getPipe({ skypeId: conversationId });
+			if(pipe != null)
 			{
-				if(conversationId == pipe.skypeId)
+				// Skype message received, clear lastSkypeSender
+				pipe.lastSkypeSender = null;
+				// Output received object (testing)
+				if(debug)
 				{
-					// Skype message received, clear lastSkypeSender
-					pipe.lastSkypeSender = null;
-					// Output received object (testing)
-					if(debug)
-					{
-						console.log("\nRECEIVED IN SKYPE");
-						console.log(message);
-					}
-					// Clean up message from skype (remove code etc)
-					var cleanMessage = toMarkdown(message.resource.content, { converters: skypeConverters });
-					// Send to Discord
-					sendDiscordMessage(pipe, cleanMessage, message.resource.imdisplayname);
+					console.log("\nRECEIVED IN SKYPE");
+					console.log(message);
 				}
-			});
+				// Clean up message from skype (remove code etc)
+				var cleanMessage = toMarkdown(message.resource.content, { converters: skypeConverters });
+				// Send to Discord
+				sendDiscordMessage(pipe, cleanMessage, message.resource.imdisplayname);
+			}
         }
     });
 };
@@ -151,31 +149,71 @@ skyweb.messagesCallback = function (messages)
 discord.on('message', function(user, userID, channelID, message, rawEvent) {
 	if(user != config.discord_username)
 	{
-		config.pipes.forEach(function(pipe)
+		var pipe = pipes.getPipe({ discordId: channelID });
+		if(pipe != null)
 		{
-			if(channelID == pipe.discordId)
+			// Discord message received, clear lastDiscordSender
+			pipe.lastDiscordSender = null;
+			// Output received object (testing)
+			if(debug)
 			{
-				// Discord message received, clear lastDiscordSender
-				pipe.lastDiscordSender = null;
-				// Output received object (testing)
-				if(debug)
-				{
-					console.log("\nRECEIVED IN DISCORD");
-					console.log(rawEvent);
-				}
-				// Clean up message from discord (remove @User encoding)
-				var cleanMessage = discord.fixMessage(message);
-				// Send to Skype
-				sendSkypeMessage(pipe, cleanMessage, user);
+				console.log("\nRECEIVED IN DISCORD");
+				console.log(rawEvent);
 			}
-		});
+			// Clean up message from discord (remove @User encoding)
+			var cleanMessage = discord.fixMessage(message);
+			// Send to Skype
+			sendSkypeMessage(pipe, cleanMessage, user);
+		}
 	}
 });
 
+discord.on('debug', function(rawEvent) {
+	if(rawEvent.t == "MESSAGE_UPDATE")
+	{
+		var channelId = rawEvent.d.channel_id;
+		var user = rawEvent.d.author.username;
+		var message = rawEvent.d.content;
+		var messageId = rawEvent.d.id;
+		
+		var pipe = pipes.getPipe({ discordId: channelId });
+		if(pipe != null)
+		{
+			// Output received object (testing)
+			if(debug)
+			{
+				console.log("\nMESSAGE_UPDATE IN DISCORD");
+				console.log(rawEvent);
+			}
+			// Clean up message from discord (remove @User encoding)
+			var cleanMessage = discord.fixMessage(message);
+			// TODO: EDIT IN SKYPE (below doesn't work yet)
+			editHelper.editMessage(pipe, message, { discordMessageId: messageId })
+		}
+	}
+	else if(rawEvent.t == "MESSAGE_DELETE")
+	{
+		var channelId = rawEvent.d.channel_id;
+		var messageId = rawEvent.d.id;
+		
+		var pipe = pipes.getPipe({ discordId: channelId });
+		if(pipe != null)
+		{
+			// Output received object (testing)
+			if(debug)
+			{
+				console.log("\nMESSAGE_DELETE IN DISCORD");
+				console.log(rawEvent);
+			}
+			// TODO: DELETE IN SKYPE (below doesn't work yet)
+			editHelper.deleteMessage(pipe, { discordMessageId: messageId })
+		}
+	}
+});
 
 var sendDisconnectedMessages = function()
 {
-	config.pipes.forEach(function(pipe)
+	pipes.each(function(pipe)
 	{
 		sendSkypeMessage(pipe, "Disconnected", "SPYPE");
 		sendDiscordMessage(pipe, "Disconnected", "SPYPE");
@@ -214,7 +252,7 @@ if(process.platform === "win32")
 process.on('SIGHUP', function()
 {
 	console.log("SIGHUP");
-	config.pipes.forEach(function(pipe)
+	pipes.each(function(pipe)
 	{
 		sendSkypeMessage(pipe, "SIGHUP", "SPYPE");
 		sendDiscordMessage(pipe, "SIGHUP", "SPYPE");
