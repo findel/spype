@@ -59,9 +59,17 @@ var sendSkypeMessage = function(pipe, message, sender)
 	
 	if(skypeConnected)
 	{
-		skyweb.sendMessage(pipe.skypeId, skypeMessage);
-		pipe.lastSkypeSender = sender;	
-		console.log("SENT!");
+		try
+		{
+			skyweb.sendMessage(pipe.skypeId, skypeMessage);
+			pipe.lastSkypeSender = sender;	
+			console.log("SENT!");
+		}
+		catch(err)
+		{
+			console.log("FAILED! Error:");
+			console.log(err)
+		}
 	}
 	else
 	{
@@ -85,15 +93,23 @@ var sendDiscordMessage = function(pipe, message, sender)
 	
 	if(discordConnected)
 	{
-		discord.sendMessage({ to: pipe.discordId, message: discordMessage, tts: false, typing: false}, function(err, response){
-			if(debug)
-			{
-				console.log("\nSENT TO DISCORD:");
-				console.log(response);
-			}
-		});
-		pipe.lastDiscordSender = sender;
-		console.log("SENT!");
+		try
+		{
+			discord.sendMessage({ to: pipe.discordId, message: discordMessage, tts: false, typing: false}, function(err, response){
+				if(debug)
+				{
+					console.log("\nSENT TO DISCORD:");
+					console.log(response);
+				}
+			});
+			pipe.lastDiscordSender = sender;
+			console.log("SENT!");
+		}
+		catch(err)
+		{
+			console.log("FAILED! Error:");
+			console.log(err)
+		}
 	}
 	else
 	{
