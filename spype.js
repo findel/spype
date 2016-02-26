@@ -40,6 +40,9 @@ var skypeConverters =
 	}
 ]
 
+// SET UP PIPES AND SAY SO
+pipes.setup();
+
 var sendSkypeMessage = function(pipe, message, sender)
 {
 	var skypeMessage = "";
@@ -65,9 +68,6 @@ var sendSkypeMessage = function(pipe, message, sender)
 		console.log("FAILED! Skype is not connected.");
 	}
 }
-
-// SET UP PIPES AND SAY SO
-pipes.setup();
 
 var sendDiscordMessage = function(pipe, message, sender)
 {	
