@@ -55,7 +55,7 @@ var sendSkypeMessage = function(pipe, message, sender)
 	
 	skypeMessage += message;
 	
-	console.log("\nSKYPE (" + pipe.name + ") " + skypeMessage);
+	console.log("\nSKYPE: (" + pipe.name + ") " + skypeMessage);
 	
 	if(skypeConnected)
 	{
