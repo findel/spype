@@ -239,36 +239,11 @@ var sendDisconnectedMessages = function()
 {
 	pipes.each(function(pipe)
 	{
-		sendSkypeMessage(pipe, "Disconnected", "SPYPE");
-		sendDiscordMessage(pipe, "Disconnected", "SPYPE");
-	});
-}
-
-function exitHandler(options, err)
-{
-    try
-	{
-		if(options.sendDisconnect)
+		if(pipe.announceConnection)
 		{
-			sendDisconnectedMessages();
+			sendSkypeMessage(pipe, "Disconnected", "SPYPE");
+			sendDiscordMessage(pipe, "Disconnected", "SPYPE");
 		}
-	}
-	finally
-	{
-		if (err) console.log(err.stack);
-		process.exit();
-	}
-}
-
-if(process.platform === "win32")
-{
-	var rl = require("readline").createInterface({
-		input: process.stdin,
-		output: process.stdout
-	});
-
-	rl.on("SIGINT", function () {
-		process.emit("SIGINT");
 	});
 }
 
@@ -276,18 +251,5 @@ if(process.platform === "win32")
 process.on('SIGHUP', function()
 {
 	console.log("SIGHUP");
-	pipes.each(function(pipe)
-	{
-		sendSkypeMessage(pipe, "SIGHUP", "SPYPE");
-		sendDiscordMessage(pipe, "SIGHUP", "SPYPE");
-	});
+	sendDisconnectedMessages();
 });
-
-//do something when app is closing
-process.on('exit', exitHandler.bind(null,{sendDisconnect:true, exit:true}));
-
-//catches ctrl+c event
-process.on('SIGINT', exitHandler.bind(null, {sendDisconnect:true, exit:true}));
-
-//catches uncaught exceptions
-process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
