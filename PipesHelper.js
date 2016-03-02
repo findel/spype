@@ -1,23 +1,23 @@
+var fs = require('fs');
+var config = JSON.parse(fs.readFileSync("config.json"));
 
-var PipesHelper = (function () 
+var PipesHelper = 
 {
-    function PipesHelper(config) {
-		this.pipes = config.pipes;
-	}
+    pipes : config.pipes,
 	
-	PipesHelper.prototype.setup = function()
+	setup : function()
 	{
 		// SET UP PIPES AND SAY SO
-		console.log("Setting up the following pipes:");
+		console.log("\nSetting up the following pipes:\n");
 		this.pipes.forEach(function(pipe)
 		{
 			pipe.lastSkypeSender = null;
 			pipe.lastDiscordSender = null;
-			console.log("* " + pipe.name);
+			console.log(" * " + pipe.name);
 		});
-	}
+	},
 	
-    PipesHelper.prototype.getPipe = function (options)
+    getPipe : function (options)
 	{
 	   if(options.skypeId != null)
 	   {
@@ -43,17 +43,16 @@ var PipesHelper = (function ()
 			});
 			return returnPipe;
 	   }
-    };
+    },
 	
-	PipesHelper.prototype.each = function (handler) 
+	each : function (handler) 
 	{
 		this.pipes.forEach(function(pipe)
 		{
 			handler(pipe);
 		});
 	}
-	
-    return PipesHelper;
-})();
+
+}
 
 module.exports = PipesHelper;
