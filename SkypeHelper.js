@@ -28,12 +28,12 @@ var SkypeHelper =
 	],
 	Connect : function()
 	{
-		console.log("\nConnecting Skype...");
+		console.log("Connecting Skype...\n");
 		try
 		{
 			this.skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) => 
 			{    
-				console.log("\n * Skype connected.")
+				console.log(" * Skype connected.\n")
 				SkypeHelper.skyweb.setStatus('Online');
 				SkypeHelper.isConnected = true;
 				pipes.each(function(pipe)
@@ -46,8 +46,9 @@ var SkypeHelper =
 		}
 		catch(err)
 		{
-			console.log("SkypeHelper.Connect() error: ");
+			console.log("SkypeHelper.Connect() error: \n");
 			console.log(err);
+			console.log("\n");
 			this.isConnected = false;
 		}
 	},
@@ -63,7 +64,7 @@ var SkypeHelper =
 		
 		skypeMessage += message;
 		
-		console.log("\nSKYPE: (" + pipe.name + ") " + skypeMessage);
+		console.log("SKYPE: (" + pipe.name + ") " + skypeMessage);
 		
 		if(SkypeHelper.isConnected)
 		{
@@ -71,17 +72,18 @@ var SkypeHelper =
 			{
 				SkypeHelper.skyweb.sendMessage(pipe.skypeId, skypeMessage);
 				pipe.lastSkypeSender = sender;	
-				console.log("SENT!");
+				console.log("SENT!\n");
 			}
 			catch(err)
 			{
-				console.log("FAILED! Error:");
-				console.log(err)
+				console.log("FAILED! Error:\n");
+				console.log(err);
+				console.log("\n");
 			}
 		}
 		else
 		{
-			console.log("FAILED! Skype is not connected.");
+			console.log("FAILED! Skype is not connected.\n");
 		}
 	},
 	Callbacks : [],
@@ -106,8 +108,9 @@ var SkypeHelper =
 					// Output received object (testing)
 					if(SkypeHelper.debug)
 					{
-						console.log("\nRECEIVED IN SKYPE");
+						console.log("RECEIVED IN SKYPE\n");
 						console.log(message);
+						console.log("\n");
 					}
 					// Clean up message from skype (remove code etc)
 					var cleanMessage = toMarkdown(message.resource.content, { converters: SkypeHelper.converters });

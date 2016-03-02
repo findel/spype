@@ -8,12 +8,12 @@ var PipesHelper =
 	setup : function()
 	{
 		// SET UP PIPES AND SAY SO
-		console.log("\nSetting up the following pipes:\n");
+		console.log("Setting up the following pipes:\n");
 		this.pipes.forEach(function(pipe)
 		{
 			pipe.lastSkypeSender = null;
 			pipe.lastDiscordSender = null;
-			console.log(" * " + pipe.name);
+			console.log(" * " + pipe.name + "\n");
 		});
 	},
 	

@@ -29,6 +29,18 @@ DiscordHelper.Connect();
 	// Discord to Skype
 	DiscordHelper.MessageCallback(SkypeHelper.SendMessage);
 
+var sayToAll = function(message)
+{
+	pipes.each(function(pipe)
+	{
+		if(pipe.announceConnection)
+		{
+			SkypeHelper.SendMessage(pipe, message, "SPYPE");
+			DiscordHelper.SendMessage(pipe, message, "SPYPE");
+		}
+	});
+}
+	
 var sendDisconnectedMessages = function()
 {
 	pipes.each(function(pipe)
@@ -41,9 +53,21 @@ var sendDisconnectedMessages = function()
 	});
 }
 
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+
+process.stdin.on('data', function (text) 
+{
+	if(text.startsWith("/say "))
+	{
+		var message = text.replace("/say ", "");
+		sayToAll(message);
+	}
+});
+
 //do something when app is closing
 process.on('SIGHUP', function()
 {
-	console.log("SIGHUP");
+	console.log("SIGHUP\n");
 	sendDisconnectedMessages();
 });

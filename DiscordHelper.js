@@ -12,7 +12,7 @@ var DiscordHelper =
 	discord : null,
 	Connect : function()
 	{
-		console.log("\nConnecting Discord...");
+		console.log("Connecting Discord...\n");
 		try
 		{
 			this.discord = new DiscordClient({
@@ -22,7 +22,7 @@ var DiscordHelper =
 			});
 			
 			this.discord.on('ready', function() {
-				console.log("\n * Discord connected.")
+				console.log(" * Discord connected.\n")
 				DiscordHelper.isConnected = true;
 				pipes.each(function(pipe)
 				{
@@ -35,8 +35,9 @@ var DiscordHelper =
 		}
 		catch(err)
 		{
-			console.log("DiscordHelper.Connect() error: ");
+			console.log("DiscordHelper.Connect() error: \n");
 			console.log(err);
+			console.log("\n");
 			this.isConnected = false;
 		}
 	},
@@ -52,7 +53,7 @@ var DiscordHelper =
 
 		discordMessage += message;
 		
-		console.log("\nDISCORD: (" + pipe.name + ") " + discordMessage);
+		console.log("DISCORD: (" + pipe.name + ") " + discordMessage);
 		
 		if(DiscordHelper.isConnected)
 		{
@@ -61,22 +62,23 @@ var DiscordHelper =
 				DiscordHelper.discord.sendMessage({ to: pipe.discordId, message: discordMessage, tts: false, typing: false}, function(err, response){
 					if(DiscordHelper.debug)
 					{
-						console.log("\nSENT TO DISCORD:");
+						console.log("SENT TO DISCORD:\n");
 						console.log(response);
 					}
 				});
 				pipe.lastDiscordSender = sender;
-				console.log("SENT!");
+				console.log("SENT!\n");
 			}
 			catch(err)
 			{
-				console.log("FAILED! Error:");
-				console.log(err)
+				console.log("FAILED! Error:\n");
+				console.log(err);
+				console.log("\n");
 			}
 		}
 		else
 		{
-			console.log("FAILED! Discord is not connected.");
+			console.log("FAILED! Discord is not connected.\n");
 		}
 	},
 	Callbacks : [],
@@ -96,8 +98,9 @@ var DiscordHelper =
 				// Output received object (testing)
 				if(DiscordHelper.debug)
 				{
-					console.log("\nRECEIVED IN DISCORD");
+					console.log("RECEIVED IN DISCORD\n");
 					console.log(rawEvent);
+					console.log("\n");
 				}
 				// Clean up message from discord (remove @User encoding)
 				var cleanMessage = DiscordHelper.discord.fixMessage(message);
