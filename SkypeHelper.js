@@ -24,6 +24,22 @@ var SkypeHelper =
 		{
 			filter: "uriobject",
 			replacement: function(content) { return "` Shared something on skype that can't be shared elsewhere! :-( `"; }
+		},
+		{
+			filter: "topicupdate",
+			replacement : function(content, node)
+			{
+				var initiatorTag = node.getElementsByTagName("initiator")[0];
+				var valueTag = node.getElementsByTagName("value")[0];
+				
+				var initiator = initiatorTag.innerHTML.replace("8:", "");
+				var value = valueTag.innerHTML;
+				
+				if(initiatorTag && valueTag)
+					return util.format("Skype topic changed to \"%s\" by %s", value, initiator);
+				else
+					return "Someone changed the skype topic";
+			}
 		}
 	],
 	Connect : function()
