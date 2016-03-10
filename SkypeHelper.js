@@ -36,9 +36,51 @@ var SkypeHelper =
 				var value = valueTag.innerHTML;
 				
 				if(initiatorTag && valueTag)
-					return util.format("Skype topic changed to \"%s\" by %s", value, initiator);
+					return util.format("Skype topic changed to \"%s\" by \"%s\".", value, initiator);
 				else
-					return "Someone changed the skype topic";
+					return "Someone changed the skype topic.";
+			}
+		},
+		{
+			filter: "deletemember",
+			replacement : function(content, node)
+			{
+				var initiatorTag = node.getElementsByTagName("initiator")[0];
+				var targetTag = node.getElementsByTagName("target")[0];
+				
+				var initiator = initiatorTag.innerHTML.replace("8:", "");
+				var target = targetTag.innerHTML.replace("8:", "");
+				
+				if(initiatorTag && targetTag)
+				{
+					if(initiator != target)
+						return util.format("\"%s\" was removed from the skype group by \"%s\".", target, initiator);
+					else
+						return util.format("\"%s\" left the skype group.", target);
+				}
+				else
+					return "Someone left the skype group.";
+			}
+		},
+		{
+			filter: "addmember",
+			replacement : function(content, node)
+			{
+				var initiatorTag = node.getElementsByTagName("initiator")[0];
+				var targetTag = node.getElementsByTagName("target")[0];
+				
+				var initiator = initiatorTag.innerHTML.replace("8:", "");
+				var target = targetTag.innerHTML.replace("8:", "");
+				
+				if(initiatorTag && targetTag)
+				{
+					if(initiator != target)
+						return util.format("\"%s\" was added to the skype group by \"%s\".", target, initiator);
+					else
+						return util.format("\"%s\" joined the skype group.", target);
+				}	
+				else
+					return "Someone joined the skype group.";
 			}
 		}
 	],
