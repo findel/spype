@@ -15,11 +15,22 @@ var DiscordHelper =
 		console.log("Connecting Discord...\n");
 		try
 		{
-			this.discord = new DiscordClient({
-				autorun: true,
-				email: config.discord_email,
-				password: config.discord_password
-			});
+			if(config.discord_token)
+			{
+				this.discord = new DiscordClient({
+					autorun: true,
+					token: config.discord_token
+				});
+			}
+			else
+			{
+				this.discord = new DiscordClient({
+					autorun: true,
+					email: config.discord_email,
+					password: config.discord_password
+				});
+			}
+
 			
 			this.discord.on('ready', function() {
 				console.log(" * Discord connected.\n")

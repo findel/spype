@@ -19,9 +19,13 @@ A nodejs command line app to create a text relay between Discord and Skype. This
 
 Spype needs a `config.json` file in the same directory as `spype.js` to work. Use the `config.json.example` as a starting point.
 
-### Enter the Skype and Discord log in details
+### Enter the Skype and Discord account details
 
 These should not be your personal log in details, but the details of accounts specifically setup to run Spype. Personally I use the same name for the accound on both Discord and Skype. This account will be used to relay the messages from one chat to another, with the usernames of the senders included in the relayed messages.
+
+For discord you can use a 'user account' or a 'bot account'. A bot account is the standard way, and you can [create one here](https://discordapp.com/developers/applications/me#top).
+
+For Skype, spype currently uses a normal user account.
 
 ### Set up your 'pipes' 
 
