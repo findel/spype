@@ -1,5 +1,6 @@
 var fs = require('fs');
 var config = JSON.parse(fs.readFileSync("config.json"));
+var output = require("./Output");
 
 var PipesHelper = 
 {
@@ -8,12 +9,12 @@ var PipesHelper =
 	setup : function()
 	{
 		// SET UP PIPES AND SAY SO
-		console.log("Setting up the following pipes:\n");
+		output.write("Setting up the following pipes:\n");
 		this.pipes.forEach(function(pipe)
 		{
 			pipe.lastSkypeSender = null;
 			pipe.lastDiscordSender = null;
-			console.log(" * " + pipe.name + "\n");
+			output.write(" * " + pipe.name + "\n");
 		});
 	},
 	

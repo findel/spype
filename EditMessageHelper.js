@@ -1,3 +1,4 @@
+var output = require("./Output");
 
 var EditMessageHelper = (function () 
 {
@@ -8,12 +9,12 @@ var EditMessageHelper = (function ()
 	   if(options.skypeMessageId != null)
 	   {
 			// TODO: Edit a message sent from skype to discord
-			console.log("\nTODO: Edit a message sent from skype to discord.")
+			output.write("\nTODO: Edit a message sent from skype to discord.")
 	   }
 	   else if(options.discordMessageId != null)
 	   {
 		   // TODO: Edit a message sent from discord to skype
-		   console.log("\nTODO: Edit a message sent from discord to skype.")
+		   output.write("\nTODO: Edit a message sent from discord to skype.")
 	   }
 	   
     };
@@ -23,12 +24,12 @@ var EditMessageHelper = (function ()
 	   if(options.skypeMessageId != null)
 	   {
 			// TODO: Delete a message sent from skype to discord
-			console.log("\nTODO: Delete a message sent from skype to discord.")
+			output.write("\nTODO: Delete a message sent from skype to discord.")
 	   }
 	   else if(options.discordMessageId != null)
 	   {
 		   // TODO: Delete a message sent from discord to skype
-		   console.log("\nTODO: Delete a message sent from discord to skype.")
+		   output.write("\nTODO: Delete a message sent from discord to skype.")
 	   }
 	   
     };

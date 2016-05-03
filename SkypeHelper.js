@@ -3,6 +3,7 @@ var fs = require('fs');
 var toMarkdown = require('to-markdown');
 
 var config = JSON.parse(fs.readFileSync("config.json"));
+var output = require("./Output");
 var pipes = require("./PipesHelper");
 var SkywebClient = require('skyweb');
 
@@ -86,12 +87,12 @@ var SkypeHelper =
 	],
 	Connect : function()
 	{
-		console.log("Connecting Skype...\n");
+		output.write("Connecting Skype...\n");
 		try
 		{
 			this.skyweb.login(config.skype_username, config.skype_password).then((skypeAccount) => 
 			{    
-				console.log(" * Skype connected.\n")
+				output.write(" * Skype connected.\n")
 				SkypeHelper.skyweb.setStatus('Online');
 				SkypeHelper.isConnected = true;
 				pipes.each(function(pipe)
@@ -104,9 +105,9 @@ var SkypeHelper =
 		}
 		catch(err)
 		{
-			console.log("SkypeHelper.Connect() error: \n");
-			console.log(err);
-			console.log("\n");
+			output.write("SkypeHelper.Connect() error: \n");
+			output.write(err);
+			output.write("\n");
 			this.isConnected = false;
 		}
 	},
@@ -118,11 +119,11 @@ var SkypeHelper =
 			//skypeMessage += "\n";
 
 		if(sender != null && sender != pipe.lastSkypeSender)
-			skypeMessage += util.format("[%s]\n", sender);
+			skypeMessage += util.format("*[%s]*\n", sender);
 		
 		skypeMessage += message;
 		
-		console.log("SKYPE: (" + pipe.name + ") " + skypeMessage);
+		output.write("SKYPE: (" + pipe.name + ") " + skypeMessage);
 		
 		if(SkypeHelper.isConnected)
 		{
@@ -130,18 +131,18 @@ var SkypeHelper =
 			{
 				SkypeHelper.skyweb.sendMessage(pipe.skypeId, skypeMessage);
 				pipe.lastSkypeSender = sender;	
-				console.log("SENT!\n");
+				output.write("SENT!\n");
 			}
 			catch(err)
 			{
-				console.log("FAILED! Error:\n");
-				console.log(err);
-				console.log("\n");
+				output.write("FAILED! Error:\n");
+				output.write(err);
+				output.write("\n");
 			}
 		}
 		else
 		{
-			console.log("FAILED! Skype is not connected.\n");
+			output.write("FAILED! Skype is not connected.\n");
 		}
 	},
 	Callbacks : [],
@@ -166,9 +167,9 @@ var SkypeHelper =
 					// Output received object (testing)
 					if(SkypeHelper.debug)
 					{
-						console.log("RECEIVED IN SKYPE\n");
-						console.log(message);
-						console.log("\n");
+						output.write("RECEIVED IN SKYPE\n");
+						output.write(message);
+						output.write("\n");
 					}
 					// Clean up message from skype (remove code etc)
 					var cleanMessage = toMarkdown(message.resource.content, { converters: SkypeHelper.converters });

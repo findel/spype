@@ -1,6 +1,7 @@
 var util = require("util");
 var fs = require('fs');
 var config = JSON.parse(fs.readFileSync("config.json"));
+var output = require("./Output");
 
 var debug = process.argv[2] == "debug" ? true : false;
 
@@ -68,6 +69,6 @@ process.stdin.on('data', function (text)
 //do something when app is closing
 process.on('SIGHUP', function()
 {
-	console.log("SIGHUP\n");
+	output.write("SIGHUP\n");
 	sendDisconnectedMessages();
 });
