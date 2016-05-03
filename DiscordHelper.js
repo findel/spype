@@ -32,6 +32,7 @@ var DiscordHelper =
 			});
 			
 			this.discord.on('message', DiscordHelper.discordMessageReceived);
+			this.discord.on('disconnected', DiscordHelper.discordDisconnected);
 		}
 		catch(err)
 		{
@@ -111,6 +112,11 @@ var DiscordHelper =
 				}
 			}
 		}
+	},
+	discordDisconnected : function()
+	{
+		console.log(" * Discord disconnected.\n");
+		process.exit();
 	}
 }
 
