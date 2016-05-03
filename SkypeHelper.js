@@ -119,7 +119,7 @@ var SkypeHelper =
 			//skypeMessage += "\n";
 
 		if(sender != null && sender != pipe.lastSkypeSender)
-			skypeMessage += util.format("*[%s]*\n", sender);
+			skypeMessage += util.format("[%s]\n", sender);
 		
 		skypeMessage += message;
 		
