@@ -1,5 +1,7 @@
 # spype
 
+[![Join the chat at https://gitter.im/findel/spype](https://badges.gitter.im/findel/spype.svg)](https://gitter.im/findel/spype?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A nodejs command line app to create a text relay between Discord and Skype. This simple (read work in progress) app allows you to create "pipes" between a specfic Skype chat and a Discord text channel.  
 
 ## Instructions
