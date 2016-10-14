@@ -10,7 +10,7 @@
     }
   ],
   "dependencies": {
-    "discord.io": "^1.8.8",
+    "discord.io": "^2.2.3",
     "markdown": "^0.5.0",
     "skyweb": "0.0.4",
     "to-markdown": "^2.1.0"

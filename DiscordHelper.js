@@ -4,7 +4,7 @@ var fs = require('fs');
 var config = JSON.parse(fs.readFileSync("config.json"));
 var output = require("./Output");
 var pipes = require("./PipesHelper");
-var DiscordClient = require('discord.io');
+var Discord = require('discord.io');
 
 var DiscordHelper = 
 {
@@ -18,14 +18,14 @@ var DiscordHelper =
 		{
 			if(config.discord_token)
 			{
-				this.discord = new DiscordClient({
+				this.discord = new Discord.Client({
 					autorun: true,
 					token: config.discord_token
 				});
 			}
 			else
 			{
-				this.discord = new DiscordClient({
+				this.discord = new Discord.Client({
 					autorun: true,
 					email: config.discord_email,
 					password: config.discord_password
@@ -72,13 +72,28 @@ var DiscordHelper =
 		{
 			try
 			{
-				DiscordHelper.discord.sendMessage({ to: pipe.discordId, message: discordMessage, tts: false, typing: false}, function(err, response){
-					if(DiscordHelper.debug)
+				DiscordHelper.discord.sendMessage(
+					{ 
+						to: pipe.discordId, 
+						message: discordMessage, 
+						tts: false, 
+						typing: false
+					}, 
+					function(err, response)
 					{
-						output.write("SENT TO DISCORD:\n");
-						output.write(response);
+						if(DiscordHelper.debug)
+						{
+							output.write("SENT TO DISCORD:\n");
+							output.write(response);
+						}
+						if(err)
+						{
+							output.write("FAILED! Error:\n");
+							output.write(err);
+							output.write("\n");
+						}
 					}
-				});
+				);
 				pipe.lastDiscordSender = sender;
 				output.write("SENT!\n");
 			}
