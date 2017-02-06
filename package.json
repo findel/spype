@@ -10,10 +10,10 @@
     }
   ],
   "dependencies": {
-    "discord.io": "^2.2.4",
+    "discord.io": "^2.4.2",
     "markdown": "^0.5.0",
     "skyweb": "^0.1.2",
-    "to-markdown": "^3.0.2"
+    "to-markdown": "^3.0.3"
   },
   "preferGlobal": false,
   "private": true,
