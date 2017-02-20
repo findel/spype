@@ -110,6 +110,12 @@ var SkypeHelper =
 			output.write("\n");
 			this.isConnected = false;
 		}
+		this.skyweb.on("error", this.errorListener);
+	},
+	errorListener : function(eventName, error)
+	{
+		console.log("!! Error occured in SkypeHelper: " + error);
+		process.exit();
 	},
 	SendMessage : function(pipe, message, sender)
 	{
