@@ -116,7 +116,7 @@ var DiscordHelper =
 	},
 	discordMessageReceived : function(user, userID, channelID, message, rawEvent)
 	{
-		if(user != config.discord_username)
+		if(userID != DiscordHelper.discord.id)
 		{
 			var pipe = pipes.getPipe({ discordId: channelID });
 			if(pipe != null)

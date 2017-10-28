@@ -1,7 +1,6 @@
 {
  "skype_username" : "bot",
  "skype_password" : "PASSWORD",
- "discord_username" : "bot",
  "discord_email" : "bot@test.com",
  "discord_password" : "PASSWORD",
  "discord_token" : "TOKEN",

@@ -160,7 +160,7 @@ var SkypeHelper =
 	{
 		messages.forEach(function (message) 
 		{
-			var spypeIsNotSender = (message.resource.from.toLowerCase().indexOf(config.skype_username.toLowerCase()) === -1);
+			var spypeIsNotSender = (message.resource.from.indexOf(SkypeHelper.skyweb.skypeAccount.selfInfo.username) === -1);
 			if(spypeIsNotSender && message.resource.messagetype !== 'Control/Typing' && message.resource.messagetype !== 'Control/ClearTyping')
 			{
 				var conversationLink = message.resource.conversationLink;
